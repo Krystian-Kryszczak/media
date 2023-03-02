@@ -1,0 +1,80 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id("org.jetbrains.kotlin.kapt") version "1.6.21"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.micronaut.application") version "3.6.7"
+    id("io.micronaut.test-resources") version "3.6.7"
+}
+
+version = "0.1"
+group = "app"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    kapt("io.micronaut:micronaut-http-validation")
+    kapt("io.micronaut.security:micronaut-security-annotations")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.cassandra:micronaut-cassandra")
+    //implementation("io.micronaut.kafka:micronaut-kafka")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut.rxjava3:micronaut-rxjava3")
+    implementation("io.micronaut.rxjava3:micronaut-rxjava3-http-client")
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut:micronaut-validation")
+    testImplementation("io.micronaut.test:micronaut-test-rest-assured")
+
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    implementation("io.micronaut.azure:micronaut-azure-sdk:4.0.0")
+    //implementation("io.micronaut.azure:micronaut-azure-function:4.0.0")
+    implementation("com.azure:azure-storage-blob:12.20.1")
+    //annotationProcessor("io.micronaut.azure:micronaut-inject-java")
+    implementation platform('com.google.cloud:libraries-bom:26.3.0')
+    implementation('com.google.cloud:google-cloud-storage')
+}
+
+
+application {
+    mainClass.set("app.ApplicationKt")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
+}
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("kotest")
+    processing {
+        incremental(true)
+        annotations("app.*")
+    }
+    testResources {
+        sharedServer = true
+    }
+}
+
+
+
